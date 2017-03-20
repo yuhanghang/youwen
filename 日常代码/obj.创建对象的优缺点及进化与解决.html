@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script type="text/javascript">
+//			var person = new Object();
+//			person.age =18,
+//			person.name ="yyh",
+//			person.sex = "男",
+//			person.say=function(){
+//				alert("我的名字是："+this.name+",我今年"+this.age+"岁了")
+//			}
+//			person.say()//通过object来创建函数，无法实现对象的重复利用，创建100个类需要100个这个过程，
+
+//			var person = {
+//				name:"yyh",
+//				age:12,
+//				sex:"男",
+//				say:function(){
+//					alert("我的名字是："+this.name+",我今年"+this.age+"岁了")
+//				}
+//			}
+///       很遗憾，json也无法完成数据的重复利用 
+
+
+//		工厂模式
+//			function greatOb(name,age){
+//				var x = new Object();
+//				x.name= name;
+//				x.age = age;
+//				x.say = function(){
+//					alert("我的名字是："+name+"我今年"+age)
+//				}
+//				return x;
+//			}
+//			
+//		    var a=greatOb("yyh",12);
+//		    a.say();
+
+		
+//工厂模式解决了代码重复利用的问题，但是无法判断其所属的类型，无法知道其所属的类，于是有了构造-->函数
+		
+
+//构造函数和工厂模式比较相近，最大的区别是类的名称；-->
+//		function Person(name,age){
+//			this.name = name;
+//			this.age = age;
+//			this.say = function(){
+//			alert("我的名字是："+this.name+"我今年"+this.age)
+//			}
+//		}
+//		
+//		var a = new Person("yyh",12);
+//		a.say();
+//		alert(a instanceof Person)
+
+// 弊端   解决了对象的重复创建问题和所属类问题，但是在每次创建一个对象后都有一个方法的拷贝，这样就出现过了内存的小号
+//这样就出现了内存的消耗，尤其的对象存在许多的方法时，内存消耗就会很高，这样就不行了。
+
+
+//解决方法  将这些方法放进全局函数里边，这样所有的对象都指向了一个函数
+//var a=say(此时的say是一个函数，a会获得这个函数逇代码，相当于写了一个函数。var a=say()则a后的say函数的返回值)
+//	<!--function Person(name,age){
+//		this.name = name;
+//		this.age = age;
+//		this.say = say;
+//	}
+//	//方法放进全局函数里
+//	function say(){
+//		alert("我的名字是"+this.name+"年龄是:"+this.age)
+//	}
+//	
+//	var x1= new Person("yyh",12);
+////	x1.say();
+//	var a = say;
+//	alert(a)
+//	//弊端：虽然这样解决了函数复制的问题，但是破坏了对象的封装性，同事充斥的全局变量过多，不利于开发，
+
+//    封装Javascript原型(prototype);window就无法访问里边的内容解决封装性问题
+//    创建构造函数后，构造函会有一个prototype属性，该属性指向该对象的原型对象，而原型对象里边存在一个constructor的属性，指向了person对象。
+//  function Person(){};
+//  Person.prototype.name="yyh";
+//  Person.prototype.age=18;
+//  Person.prototype.say=function(){
+//  	alert("我的名字是："+this.name+"今年"+this.age+"岁");
+//  }
+//  
+//  var a = new Person();
+////  a.name="于永航";
+//
+//	alert("name" in a)    
+
+
+//上边的写法解决的很多的问题，但当我们的存在大量的属性或方法时，要写大量的obj.prototype.属性名,这样的代码感觉不是很好 
+// 我们可以使用json来写
+//	function Person(){
+//	}
+//
+//	Person.prototype={//这种属于扩充，因为原型里边本身就没有这些属性
+//		name:"yyh",
+//		age:12,
+//		say:function(){
+//			alert("我是"+this.name+"年龄"+this.age)
+//		}
+//	}
+//	
+//	var a = new Person();
+//	a.say();
+//	
+//	var b = new Person();
+//	b.name ="张三";
+//	b.age=20;//覆盖 也就是先访问自己的属性，不会再访问原型里边的，
+	
+	
+	//问题  我们这样做是将对象的原型覆盖（这两种写法不一样的，第一种是扩充,第二种是覆盖）
+	//然后会出现以下的问题\
+//	function Person(){};
+//	Person.prototype = {
+//		constructor:Person,//手动指向Person
+//		name:"yyh",
+//		age:18,
+//		say:function(){
+//			alert("我是"+this.name+"我今年"+this.age)
+//		}
+//	}
+//	
+//	var a = new Person();
+////	alert(a.constructor == Object)//指向的是obj而不是person
+//	alert(a.constructor == Person)//我们来手动的进行指向Person
+////	a.say();
+//	
+//	var b = new Person();
+//	b.name = "张三";
+//	b.age=20;
+//	b.say();
+	
+	//此时的a的构造器不指向Person，而是指向Object
+	//因为我们覆盖了Person的原型，所以如果constructor比较重要的话，我们可以手动至Person
+    //通过手动改动constructor的指向我们将这个问题解决了，接下来我们出看看别的问题
+    
+//  function Person(){}
+//  var a = new Person();
+//  Person.prototype.sayHello=function(){
+//  	alert("我是"+this.name+"年龄"+this.age)
+//  }
+//  
+//  
+//  Person.prototype={
+//  	constructor:Person,//手动指向Person
+//  	name:"yyh",
+//  	age:18,
+//  	say:function(){
+//  		alert("我是"+this.name+"今年"+this.age);
+//  	}
+//  }
+//  
+//  var b = new Person;
+//  b.name="张三"
+//  b.age = 20;
+//  
+//  a.sayHello();//此时找不到name和age，但是代码正确
+//  b.say();//正确
+//  
+//  a.say();//正确
+//  b.sayHello();//错误
+//  
+    
+    
+    
+    //封装
+    
+    //利用原始我是实现了理想的封装，但这种封装也同样有问题，
+    //我们无法像使用构造函数那样将属性传递用于设置值
+    //当属性中农有引用类型，可能存在变量值得重复
+    
+//  function Person(){
+//  	
+//  }
+//  Person.prototype={
+//  	constructor:Person,
+//  	name:"yyh",
+//  	age:18,
+//  	friends:["老大","老二"],
+//  	say:function(){
+//  		alert("我的名字"+this.name+"今年"+this.age)
+//  	}
+//  }
+//  
+//  var a = new Person();
+//  a.friends.push("老三");
+//	alert(a.friends);
+//	a.name="于永航"
+//  alert(a.name);
+    
+    //因为a和b对象指向了同一个原型链，所以当a的friends发生变化时，b的也跟着变化
+    //a的引用类型friend是通过a添加的并不是通过prototype添加的，所以会出现a更改了值，b的friends也跟着变化了，
+    //但是当a更改name值得时候只是进行了覆盖，b的name值依旧没有变化。这就是：属性中有引用类型，可能存在变量的重复
+//  var b = new Person();
+//  alert(b.friends)
+//  alert(b.name);
+    
+//  最佳方案:给予组合的对象定义
+//为了解决原型链带来的问题，通过组合构造函数和原型来实现对象的创建，将：属性在构造函数中定义，将方法在原型里定义。
+
+
+//属性在构造函数里定义
+//function Person(name,age,friends){
+//	this.name = name;
+//	this.age = age;
+//	this.friends = friends; 
+//}
+//
+////将所有的属性都保存在自己的内存中
+////下面将方法定义在prototype（原型）里边
+//
+//Person.prototype={
+//	constructor:Person,
+//	say:function(){
+//		alert("我的名字是："+name+"年龄是"+age)
+//	}
+//};
+//
+//var a = new Person("yyh",18,["老大","老二","老三"]);
+//a.friends.push("老四");
+//alert(a.friends);
+//
+//var b = new Person("于永航",24,["全全","安安"]);
+//alert(b.friends);
+  
+  
+  //最终定义的版本就是这个，上边的都是它发展的及时，不停的改进不停的发现，所有的问题都是如此，没有完美，只有更好
+  
+  
+  //选学， 有些面向对象的程序员等觉得将方法放在外边不像面向对象的写法，所以提供了另一种写法
+//function Person(name,age,friends){
+//	this.name=name,
+//	this.age=age;
+//	this.friends=friends;
+  	//判读如果原型里边不存在这个函数就执行下边的代码
+  	//如果存在就不用写了
+//	if(!Person.prototype.say){
+//		Person.prototype.say=function(){
+//			alert("我的名字是:"+this.name+"今年"+this.age)
+//		}
+//	}
+//}
+//var a = new Person("yyh",18,["老大","老二"]);
+//a.friends.push("老三");
+////alert(a.friends);
+//
+//var b = new Person("于永航",20,["小小","dada"]);
+//alert(b.friends)
+
+
+//继承--原型创建对象
+//面向对象的三大特征：封装，继承，多态
+
+
+//1原型链的继承
+
+//定义一个父类
+//	function Parent(){
+//		this.pv="parent";
+//	}
+//	Parent.prototype.showParent=function(){
+//		alert(this.pv);
+//	}
+//	
+//	
+////创建一个子类
+//	function Son(){
+//		this.sv = "son";
+//	}
+//	
+////使用原型链来继承
+//
+//Son.prototype = new Parent();
+//
+//	Son.prototype.showSon = function(){
+//	alert(this.sv)
+//	}
+//
+//var a = new Son();
+//a.showParent();
+//a.showSon();
+	</script>
+	</body>
+</html>
